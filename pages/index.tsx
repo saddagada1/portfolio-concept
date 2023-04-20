@@ -1,13 +1,7 @@
-import Head from "next/head";
+import { NextPage } from "next";
 
-const Home = () => {
-  return (
-    <>
-      <Head>
-        <title>Saivamsi Addagada | Portfolio</title>
-      </Head>
-    </>
-  );
+const Index: NextPage = () => {
+  return <></>;
 };
 
-export default Home;
+export default Index;

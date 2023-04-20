@@ -1,11 +1,16 @@
-import Hr from "@/components/utils/Hr";
-import Vr from "@/components/utils/Vr";
+import Hr from "@/components/Utils/Hr";
+import Vr from "@/components/Utils/Vr";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { setTheme } from "@/redux/slices/themeSlice";
 import { isServer } from "@/utils/isServer";
+import { View } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { EffectComposer, Noise } from "@react-three/postprocessing";
+import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
+import Scene from "@/components/Scene/Scene";
 
 const Sidebar: React.FC = () => {
   const router = useRouter();
@@ -58,8 +63,11 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [viewHeight, setViewHeight] = useState(0);
   const [viewWidth, setViewWidth] = useState(0);
-  const container = useRef<HTMLElement | null>(null);
-  const tracking = useRef<HTMLDivElement | null>(null);
+  const container = useRef<HTMLElement>(null!);
+  const tracking = useRef<HTMLDivElement>(null!);
+  const theme = useAppSelector((store) => store.theme);
+  const dispatch = useAppDispatch();
+  const router = useRouter();
 
   useEffect(() => {
     const setViewport = () => {
@@ -78,32 +86,43 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   }, []);
   return (
     <>
+      <Head>
+        <title>Saivamsi Addagada | Portfolio</title>
+      </Head>
       {viewWidth && viewHeight && (
         <main
           ref={container}
-          className="bg-primary p-[1vmax] relative"
+          className="bg-primary p-6 relative"
           style={{
             height: viewHeight,
             width: viewWidth,
           }}
         >
-          <div className="w-full h-full flex absolute z-10">
+          <div
+            className="flex absolute z-10"
+            style={{ width: viewWidth - 48, height: viewHeight - 48 }}
+          >
             <Hr style={{ top: 0 }} />
             <Hr style={{ bottom: 0 }} />
             <Vr style={{ left: 0 }} />
             <Vr style={{ right: 0 }} />
             <Sidebar />
-            <div ref={tracking} className="w-full h-full">
-              {children}
-            </div>
+            {router.pathname === "/" ? (
+              <div ref={tracking} className="w-full h-full">
+                {children}
+              </div>
+            ) : (
+              <div className="w-full h-full">{children}</div>
+            )}
           </div>
           <Canvas
-            style={{ width: viewWidth, height: viewHeight, margin: "-1vmax" }}
+            style={{ width: viewWidth, height: viewHeight }}
+            className="-m-6"
             camera={{ position: [0, 0, 8] }}
             dpr={[1, 2]}
-            eventSource={container.current!}
+            eventSource={container}
           >
-            <color attach="background" args={["#d1d1d1"]} />
+            <color attach="background" args={[theme.primaryColour]} />
             <EffectComposer>
               {/* <Glitch
 strength={new Vector2(0.1, 0.5)}
@@ -114,6 +133,9 @@ active={shouldGlitch}
 /> */}
               <Noise premultiply={true} opacity={0.5} />
             </EffectComposer>
+            <View track={tracking}>
+              <Scene />
+            </View>
           </Canvas>
         </main>
       )}

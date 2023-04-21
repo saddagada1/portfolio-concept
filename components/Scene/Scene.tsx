@@ -1,10 +1,11 @@
-import { useFBO, Text, MeshTransmissionMaterial } from "@react-three/drei";
+import { Text, MeshTransmissionMaterial, Environment } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import { useMemo, useRef, useState } from "react";
-import { Mesh, Group, Vector2, Vector3, Color } from "three";
+import { useRef, useState } from "react";
+import { Mesh, Group, Color, Vector2 } from "three";
 import { rand } from "@/utils/rand";
-import { OverrideMaterialManager } from "postprocessing";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { useAppSelector } from "@/redux/hooks";
+import { EffectComposer, Glitch } from "@react-three/postprocessing";
+import { GlitchMode, OverrideMaterialManager } from "postprocessing";
 
 interface SceneProps {
   data?: string[];
@@ -18,43 +19,11 @@ const Scene: React.FC<SceneProps> = ({ data }) => {
   const [shouldGlitch, setShouldGlitch] = useState(false);
   OverrideMaterialManager.workaroundEnabled = true;
 
-  const uniforms = useMemo(
-    () => ({
-      uTexture: {
-        value: null,
-      },
-      uIorR: { value: 1.6 },
-      uIorY: { value: 1.6 },
-      uIorG: { value: 1.6 },
-      uIorC: { value: 1.6 },
-      uIorB: { value: 1.6 },
-      uIorP: { value: 1.6 },
-      uRefractPower: {
-        value: 0.3,
-      },
-      uChromaticAberration: {
-        value: 1.0,
-      },
-      uSaturation: { value: 1.08 },
-      uShininess: { value: 40.0 },
-      uDiffuseness: { value: 0.2 },
-      uFresnelPower: { value: 6.0 },
-      uLight: {
-        value: new Vector3(-1.0, 1.0, 1.0),
-      },
-      winResolution: {
-        value: new Vector2(window.innerWidth, window.innerHeight).multiplyScalar(
-          Math.min(window.devicePixelRatio, 2)
-        ),
-      },
-    }),
-    []
-  );
-
   useFrame((state) => {
     const { camera, mouse, clock } = state;
     text.current.position.x -= 0.005;
-    camera.rotation.y += (mouse.x * 0.1 - camera.rotation.y) * 0.02;
+    camera.rotation.x += (mouse.y * 0.1 - camera.rotation.x) * 0.005;
+    camera.rotation.y += (mouse.x * 0.1 - camera.rotation.y) * 0.005;
     orb.current.rotation.x -= (mouse.y * 0.1 - camera.rotation.x) * 0.2;
     orb.current.rotation.y -= (mouse.x * 0.1 - camera.rotation.y) * 0.2;
     if (clock.elapsedTime % 1 > 0.99 && Math.round(clock.elapsedTime) % rand(5, 7) === 0) {
@@ -73,22 +42,37 @@ const Scene: React.FC<SceneProps> = ({ data }) => {
 
   return (
     <>
+      <Environment
+        files="https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/dancing_hall_1k.hdr"
+        blur={1}
+      />
+      <EffectComposer>
+        <Glitch
+          strength={new Vector2(0.1, 0.5)}
+          duration={new Vector2(0.05, 0.1)}
+          columns={0.0001}
+          mode={GlitchMode.CONSTANT_MILD}
+          active={shouldGlitch}
+        />
+      </EffectComposer>
       <mesh ref={orb}>
         <octahedronGeometry args={[3, orbDetail]} />
         <MeshTransmissionMaterial
-          thickness={0.3}
+          thickness={0.5}
           backside
-          backsideThickness={0.3}
+          ior={1.3}
+          backsideThickness={0.5}
           roughness={0.3}
           chromaticAberration={0.3}
-          distortionScale={0.5}
-          temporalDistortion={0}
-          background={new Color(theme.primaryColour)}
+          distortion={1.0}
+          distortionScale={1.0}
+          temporalDistortion={0.3}
+          background={new Color(theme.primaryColour + "80")}
         />
       </mesh>
       <group ref={text} position={[-13, 0, 0]}>
         <Text
-          font="/assets/fonts/Raleway-Bold.ttf"
+          font="/fonts/Raleway-Bold.ttf"
           color={theme.secondaryColour}
           position={[0, 1.3, 0]}
           anchorX="left"
@@ -98,7 +82,7 @@ const Scene: React.FC<SceneProps> = ({ data }) => {
           repudiandae fuga maxime velit commodi! Nostrum, dignissimos.
         </Text>
         <Text
-          font="/assets/fonts/Raleway-Bold.ttf"
+          font="/fonts/Raleway-Bold.ttf"
           color={theme.secondaryColour}
           position={[0, 0, 0]}
           anchorX="left"
@@ -108,7 +92,7 @@ const Scene: React.FC<SceneProps> = ({ data }) => {
           repellendus labore iusto necessitatibus. Aspernatur, enim? Atque.
         </Text>
         <Text
-          font="/assets/fonts/Raleway-Bold.ttf"
+          font="/fonts/Raleway-Bold.ttf"
           color={theme.secondaryColour}
           position={[0, -1.3, 0]}
           anchorX="left"

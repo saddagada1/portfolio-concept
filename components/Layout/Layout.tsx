@@ -3,14 +3,10 @@ import Vr from "@/components/Utils/Vr";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setTheme } from "@/redux/slices/themeSlice";
 import { isServer } from "@/utils/isServer";
-import { View } from "@react-three/drei";
-import { Canvas } from "@react-three/fiber";
-import { EffectComposer, Noise } from "@react-three/postprocessing";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
-import Scene from "@/components/Scene/Scene";
+import { useEffect, useState } from "react";
 
 const Sidebar: React.FC = () => {
   const router = useRouter();
@@ -63,11 +59,7 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [viewHeight, setViewHeight] = useState(0);
   const [viewWidth, setViewWidth] = useState(0);
-  const container = useRef<HTMLElement>(null!);
-  const tracking = useRef<HTMLDivElement>(null!);
   const theme = useAppSelector((store) => store.theme);
-  const dispatch = useAppDispatch();
-  const router = useRouter();
 
   useEffect(() => {
     const setViewport = () => {
@@ -91,7 +83,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       </Head>
       {viewWidth && viewHeight && (
         <main
-          ref={container}
           className="bg-primary p-6 relative"
           style={{
             height: viewHeight,
@@ -107,36 +98,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <Vr style={{ left: 0 }} />
             <Vr style={{ right: 0 }} />
             <Sidebar />
-            {router.pathname === "/" ? (
-              <div ref={tracking} className="w-full h-full">
-                {children}
-              </div>
-            ) : (
-              <div className="w-full h-full">{children}</div>
-            )}
+            <div className="w-full h-full relative -z-[1]">{children}</div>
           </div>
-          <Canvas
-            style={{ width: viewWidth, height: viewHeight }}
-            className="-m-6"
-            camera={{ position: [0, 0, 8] }}
-            dpr={[1, 2]}
-            eventSource={container}
-          >
-            <color attach="background" args={[theme.primaryColour]} />
-            <EffectComposer>
-              {/* <Glitch
-strength={new Vector2(0.1, 0.5)}
-duration={new Vector2(0.05, 0.1)}
-columns={0.0001}
-mode={GlitchMode.CONSTANT_MILD}
-active={shouldGlitch}
-/> */}
-              <Noise premultiply={true} opacity={0.5} />
-            </EffectComposer>
-            <View track={tracking}>
-              <Scene />
-            </View>
-          </Canvas>
         </main>
       )}
     </>

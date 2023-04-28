@@ -2,11 +2,13 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "@/redux/store";
 
 interface ThemeState {
+  mode: string;
   primaryColour: string;
   secondaryColour: string;
 }
 
 const initialState: ThemeState = {
+  mode: "Light",
   primaryColour: "#d1d1d1",
   secondaryColour: "#161615",
 };
@@ -16,7 +18,8 @@ const themeSlice = createSlice({
   initialState,
   reducers: {
     setTheme(state, action: PayloadAction<ThemeState>) {
-      (state.primaryColour = action.payload.primaryColour),
+      (state.mode = action.payload.mode),
+        (state.primaryColour = action.payload.primaryColour),
         (state.secondaryColour = action.payload.secondaryColour);
     },
   },

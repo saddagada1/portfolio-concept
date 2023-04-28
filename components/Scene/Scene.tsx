@@ -1,31 +1,39 @@
-import { Text, MeshTransmissionMaterial, Environment } from "@react-three/drei";
+import { Text, MeshTransmissionMaterial, Environment, useFBO, Shadow } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { useRef, useState } from "react";
-import { Mesh, Group, Color, Vector2 } from "three";
+import { Mesh, Group, Vector2, MathUtils } from "three";
 import { rand } from "@/utils/rand";
 import { useAppSelector } from "@/redux/hooks";
-import { EffectComposer, Glitch } from "@react-three/postprocessing";
+import { ColorAverage, EffectComposer, Glitch } from "@react-three/postprocessing";
 import { GlitchMode, OverrideMaterialManager } from "postprocessing";
 
 interface SceneProps {
-  data?: string[];
+  data: string;
 }
 
 const Scene: React.FC<SceneProps> = ({ data }) => {
   const orb = useRef<Mesh>(null!);
+  const shadow = useRef<Mesh>(null!);
   const text = useRef<Group>(null!);
   const theme = useAppSelector((store) => store.theme);
   const [orbDetail, setOrbDetail] = useState(rand(1, 5));
   const [shouldGlitch, setShouldGlitch] = useState(false);
+  const renderTarget = useFBO();
   OverrideMaterialManager.workaroundEnabled = true;
 
   useFrame((state) => {
-    const { camera, mouse, clock } = state;
-    text.current.position.x -= 0.005;
-    camera.rotation.x += (mouse.y * 0.1 - camera.rotation.x) * 0.005;
-    camera.rotation.y += (mouse.x * 0.1 - camera.rotation.y) * 0.005;
+    const { gl, scene, camera, mouse, clock } = state;
+    text.current.visible = true;
+    gl.setRenderTarget(renderTarget);
+    gl.render(scene, camera);
+    text.current.visible = false;
     orb.current.rotation.x -= (mouse.y * 0.1 - camera.rotation.x) * 0.2;
     orb.current.rotation.y -= (mouse.x * 0.1 - camera.rotation.y) * 0.2;
+    orb.current.position.x = MathUtils.lerp(orb.current.position.x, 2 + mouse.x * 2, 0.02);
+    orb.current.position.y = MathUtils.lerp(orb.current.position.y, mouse.y * 1.5, 0.02);
+    shadow.current.position.x = MathUtils.lerp(shadow.current.position.x, 2.5 + mouse.x * 2, 0.02);
+    shadow.current.scale.x = MathUtils.lerp(shadow.current.scale.x, 10 + mouse.y * 2, 0.02);
+    text.current.position.y += 0.005;
     if (clock.elapsedTime % 1 > 0.99 && Math.round(clock.elapsedTime) % rand(5, 7) === 0) {
       setShouldGlitch(true);
       setTimeout(() => {
@@ -38,14 +46,17 @@ const Scene: React.FC<SceneProps> = ({ data }) => {
         setShouldGlitch(false);
       }, 100 * rand(2, 4));
     }
+    gl.setRenderTarget(null);
   });
 
   return (
     <>
-      <Environment
-        files="https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/dancing_hall_1k.hdr"
-        blur={1}
-      />
+      <color attach="background" args={[theme.primaryColour]} />
+      {theme.mode === "Light" ? (
+        <Environment files="/dancing_hall_1k.hdr" blur={1} />
+      ) : (
+        <Environment preset="apartment" blur={1} />
+      )}
       <EffectComposer>
         <Glitch
           strength={new Vector2(0.1, 0.5)}
@@ -54,10 +65,12 @@ const Scene: React.FC<SceneProps> = ({ data }) => {
           mode={GlitchMode.CONSTANT_MILD}
           active={shouldGlitch}
         />
+        {theme.mode === "Dark" ? <ColorAverage /> : <></>}
       </EffectComposer>
-      <mesh ref={orb}>
-        <octahedronGeometry args={[3, orbDetail]} />
+      <mesh ref={orb} position={[2, 0, 0]}>
+        <octahedronGeometry args={[3.25, orbDetail]} />
         <MeshTransmissionMaterial
+          buffer={renderTarget.texture}
           thickness={0.5}
           backside
           ior={1.3}
@@ -67,41 +80,26 @@ const Scene: React.FC<SceneProps> = ({ data }) => {
           distortion={1.0}
           distortionScale={1.0}
           temporalDistortion={0.3}
-          background={new Color(theme.primaryColour + "80")}
         />
       </mesh>
-      <group ref={text} position={[-13, 0, 0]}>
-        <Text
-          font="/fonts/Raleway-Bold.ttf"
-          color={theme.secondaryColour}
-          position={[0, 1.3, 0]}
-          anchorX="left"
-        >
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sit, id. Laudantium, et commodi
-          totam quos vel mollitia recusandae laborum eveniet perferendis? Expedita, suscipit
-          repudiandae fuga maxime velit commodi! Nostrum, dignissimos.
-        </Text>
-        <Text
-          font="/fonts/Raleway-Bold.ttf"
-          color={theme.secondaryColour}
-          position={[0, 0, 0]}
-          anchorX="left"
-        >
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut nulla, totam, hic,
-          repudiandae eius velit rerum harum voluptatibus nemo quibusdam adipisci voluptates! Quos
-          repellendus labore iusto necessitatibus. Aspernatur, enim? Atque.
-        </Text>
-        <Text
-          font="/fonts/Raleway-Bold.ttf"
-          color={theme.secondaryColour}
-          position={[0, -1.3, 0]}
-          anchorX="left"
-        >
-          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Odit laboriosam quis,
-          consequatur maxime blanditiis commodi dolorem, voluptatibus provident, sunt quam eveniet
-          harum reiciendis corporis incidunt atque at deleniti ratione modi.
-        </Text>
-      </group>
+      <Text
+        position={[4, 5, 0]}
+        ref={text}
+        font="/fonts/Raleway-Bold.ttf"
+        color={theme.secondaryColour}
+        maxWidth={15}
+        fontSize={0.9}
+        anchorY="top"
+      >
+        {data}
+      </Text>
+      <Shadow
+        ref={shadow}
+        scale={[10, 3, 3]}
+        position={[2.5, -5, 0]}
+        opacity={theme.mode === "Light" ? 0.3 : 0.01}
+        color={theme.secondaryColour}
+      />
     </>
   );
 };

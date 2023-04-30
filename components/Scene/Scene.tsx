@@ -67,7 +67,18 @@ const Scene: React.FC<SceneProps> = ({ data }) => {
         />
         {theme.mode === "Dark" ? <ColorAverage /> : <></>}
       </EffectComposer>
-      <mesh ref={orb} position={[2, 0, 0]}>
+      <mesh
+        ref={orb}
+        onPointerEnter={(event) => {
+          event.stopPropagation();
+          document.body.style.cursor = "pointer";
+        }}
+        onPointerLeave={(event) => {
+          event.stopPropagation();
+          document.body.style.cursor = "default";
+        }}
+        position={[2, 0, 0]}
+      >
         <octahedronGeometry args={[3.25, orbDetail]} />
         <MeshTransmissionMaterial
           buffer={renderTarget.texture}

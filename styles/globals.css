@@ -123,18 +123,67 @@
   background-image: repeating-linear-gradient(
     135deg,
     var(--secondary-colour),
+    var(--secondary-colour) 0.5%,
+    transparent 0.5%,
+    transparent 2%
+  );
+}
+
+.stripes-2 {
+  background-image: repeating-linear-gradient(
+    45deg,
+    var(--secondary-colour),
     var(--secondary-colour) 0.25%,
     transparent 0.25%,
-    transparent 1.75%
+    transparent 0.5%
   );
+}
+
+.rombus {
+  background-color: var(--primary-colour);
+  background-image: repeating-linear-gradient(
+      45deg,
+      var(--secondary-colour) 25%,
+      transparent 25%,
+      transparent 75%,
+      var(--secondary-colour) 75%,
+      var(--secondary-colour)
+    ),
+    repeating-linear-gradient(
+      45deg,
+      var(--secondary-colour) 25%,
+      var(--primary-colour) 25%,
+      var(--primary-colour) 75%,
+      var(--secondary-colour) 75%,
+      var(--secondary-colour)
+    );
+  background-position: 0 0, 4px 4px;
+  background-size: 8px 8px;
+}
+
+.arrow {
+  -webkit-mask: url("../public/arrow.svg");
+  mask: url("../public/arrow.svg");
+  -webkit-mask-size: contain;
+  mask-size: contain;
 }
 
 .link::after {
   clip-path: polygon(100% 50%, 100% 100%, 0% 100%, 0% 50%);
+  -webkit-clip-path: polygon(100% 50%, 100% 100%, 0% 100%, 0% 50%);
 }
 
-.grain:after {
-  content: "";
+.hr {
+  width: 0%;
+  animation: hr 2s ease forwards;
+}
+
+.vr {
+  height: 0%;
+  animation: vr 2s ease forwards;
+}
+
+.grain {
   background-image: url("../public/1k_Dissolve_Noise_Texture.png");
   height: 300%;
   width: 300%;
@@ -142,6 +191,24 @@
   opacity: 0.05;
   pointer-events: none;
   animation: grain 8s steps(10) infinite;
+}
+
+@keyframes hr {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+@keyframes vr {
+  0% {
+    height: 0%;
+  }
+  100% {
+    height: 100%;
+  }
 }
 
 @keyframes grain {

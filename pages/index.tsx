@@ -33,23 +33,23 @@ const Index: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({ data 
   return (
     <>
       <div className="w-1/3 absolute bottom-0 left-0 m-[3.5vmax] z-10 text-secondary">
-        <h1 className="w-max group font-black uppercase text-[1.5vmax] flex selection:bg-secondary selection:text-primary cursor-default">
+        <h1 className="w-max group font-black uppercase text-[2vmax] flex selection:bg-secondary selection:text-primary cursor-default">
           <span className="italic text-transparent relative link will-change-transform before:content-['Saivamsi'] before:absolute before:h-1/2 before:overflow-clip before:transition-transform before:duration-500 before:translate-x-[0%] before:text-secondary after:content-['Saivamsi'] after:absolute after:w-full after:h-full after:block after:top-0 after:transition-transform after:duration-500 after:text-secondary group-hover:before:translate-x-[-10%]">
             Saivamsi
           </span>
           &nbsp;Addagada
         </h1>
-        <p className="font-bold text-[1vmax] selection:bg-secondary selection:text-primary">
-          Portfolio
+        <p className="font-bold text-[1.25vmax] selection:bg-secondary selection:text-primary">
+          [ Portfolio ]
         </p>
-        <p className="w-5/6 font-mono font-semibold tracking-widest uppercase text-[0.75vmax] mt-[1vmax] selection:bg-secondary selection:text-primary">
+        <p className="font-mono font-semibold tracking-widest uppercase text-[0.75vmax] mt-[1vmax] selection:bg-secondary selection:text-primary">
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Eveniet unde temporibus quo iste
           ipsa suscipit sint facere, eos inventore adipisci non fugit obcaecati corrupti voluptatum
           maiores sunt culpa nulla. Velit!
         </p>
       </div>
       <div className="w-full h-full fixed">
-        <Canvas camera={{ position: [0, 0, 8] }} dpr={[1, 2]}>
+        <Canvas camera={{ position: [0, 0, 8] }} dpr={[1, 1]} legacy>
           <Scene data={data} />
         </Canvas>
       </div>

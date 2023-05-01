@@ -169,8 +169,12 @@
 }
 
 .link::after {
-  clip-path: polygon(100% 50%, 100% 100%, 0% 100%, 0% 50%);
-  -webkit-clip-path: polygon(100% 50%, 100% 100%, 0% 100%, 0% 50%);
+  clip-path: polygon(100% 49%, 100% 100%, 0% 100%, 0% 49%);
+  -webkit-clip-path: polygon(100% 49%, 100% 100%, 0% 100%, 0% 49%);
+}
+
+.cursor {
+  animation: cursor 1s step-end infinite;
 }
 
 .hr {
@@ -191,6 +195,16 @@
   opacity: 0.05;
   pointer-events: none;
   animation: grain 8s steps(10) infinite;
+}
+
+@keyframes cursor {
+  from,
+  to {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
 }
 
 @keyframes hr {

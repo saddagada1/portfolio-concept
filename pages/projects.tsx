@@ -1,86 +1,10 @@
 import Hr from "@/components/Utils/Hr";
 import Vr from "@/components/Utils/Vr";
-import { useAppSelector } from "@/redux/hooks";
-import { Canvas, createPortal, useFrame } from "@react-three/fiber";
-import { MathUtils, Mesh, ShaderMaterial, Scene as ThreeScene } from "three";
 import { NextPage } from "next";
-import { MutableRefObject, useRef } from "react";
-import { useAspect, useFBO, useVideoTexture } from "@react-three/drei";
-import { transitionVertexShader, transitionFragmentShader } from "@/utils/shaders";
-
-interface SceneProps {
-  reveal: MutableRefObject<boolean>;
-}
-
-const Scene: React.FC<SceneProps> = ({ reveal }) => {
-  const screenMesh = useRef<Mesh>(null!);
-  const videoScene = new ThreeScene();
-  const videoSize = useAspect(1920, 1080);
-  const video = useVideoTexture("/stock.mp4");
-  const renderTargetA = useFBO();
-  const renderTargetB = useFBO();
-  const theme = useAppSelector((store) => store.theme);
-
-  useFrame((state) => {
-    const { gl, scene, camera } = state;
-    gl.setRenderTarget(renderTargetA);
-    gl.render(scene, camera);
-    gl.setRenderTarget(renderTargetB);
-    gl.render(videoScene, camera);
-    const material = screenMesh.current.material as ShaderMaterial;
-    material.uniforms.textureA.value = renderTargetA.texture;
-    material.uniforms.textureB.value = renderTargetB.texture;
-    material.uniforms.uProgress.value = MathUtils.lerp(
-      material.uniforms.uProgress.value,
-      reveal.current ? 1.0 : -1.0,
-      0.05
-    );
-    gl.setRenderTarget(null);
-  });
-
-  return (
-    <>
-      <color attach="background" args={[theme.primaryColour]} />
-      {createPortal(
-        <>
-          <color attach="background" args={[theme.secondaryColour]} />
-          <mesh scale={videoSize}>
-            <planeGeometry />
-            <meshBasicMaterial transparent opacity={0.75} map={video} toneMapped={false} />
-          </mesh>
-        </>,
-        videoScene
-      )}
-      <mesh ref={screenMesh}>
-        <planeGeometry args={[2, 2]} />
-        <shaderMaterial
-          uniforms={{
-            textureA: {
-              value: null,
-            },
-            textureB: {
-              value: null,
-            },
-            uProgress: {
-              value: -1.0,
-            },
-          }}
-          vertexShader={transitionVertexShader}
-          fragmentShader={transitionFragmentShader}
-        />
-      </mesh>
-    </>
-  );
-};
 
 const Project: React.FC = () => {
-  const reveal = useRef<boolean>(false);
   return (
-    <div
-      onMouseEnter={() => (reveal.current = true)}
-      onMouseLeave={() => (reveal.current = false)}
-      className="w-full h-full cursor-pointer text-secondary relative"
-    >
+    <div className="w-full h-full cursor-pointer text-secondary relative">
       <h2 className="absolute left-[1vmax] font-black uppercase text-[3vmax] selection:bg-secondary selection:text-primary z-10 pointer-events-none">
         Project
       </h2>
@@ -101,9 +25,6 @@ const Project: React.FC = () => {
         <p>Server Development</p>
       </div>
       <div className="arrow bg-secondary absolute w-1/6 aspect-square right-0 z-10 pointer-events-none" />
-      <Canvas style={{ position: "absolute" }} dpr={[1, 1]} legacy>
-        <Scene reveal={reveal} />
-      </Canvas>
     </div>
   );
 };

@@ -133,10 +133,40 @@
   background-image: repeating-linear-gradient(
     45deg,
     var(--secondary-colour),
-    var(--secondary-colour) 0.25%,
-    transparent 0.25%,
-    transparent 0.5%
+    var(--secondary-colour) 10px,
+    transparent 10px,
+    transparent 20px
   );
+}
+
+.stripes-thin {
+  background-color: var(--primary-colour);
+  background-size: 5px 5px;
+  background-image: repeating-linear-gradient(
+    45deg,
+    var(--secondary-colour) 0,
+    var(--secondary-colour) 1px,
+    var(--primary-colour) 0,
+    var(--primary-colour) 50%
+  );
+}
+
+.boxes {
+  background-color: var(--primary-colour);
+  background-image: linear-gradient(var(--secondary-colour) 0.5px, transparent 0.5px),
+    linear-gradient(to right, var(--secondary-colour) 0.5px, var(--primary-colour) 0.5px);
+  background-size: 10px 10px;
+}
+
+.moon {
+  background-color: var(--primary-colour);
+  background-image: radial-gradient(
+    ellipse farthest-corner at 4px 4px,
+    var(--secondary-colour),
+    var(--secondary-colour) 50%,
+    var(--primary-colour) 50%
+  );
+  background-size: 4px 4px;
 }
 
 .rombus {

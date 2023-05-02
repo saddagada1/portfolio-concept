@@ -177,7 +177,7 @@ const Index: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({ data 
         </Canvas>
       </div>
       <p
-        className="absolute right-[1vmax] bottom-[10vmax] font-mono font-semibold tracking-widest uppercase text-[0.75vmax] text-secondary selection:bg-secondary selection:text-primary"
+        className="absolute right-[1.25vmax] bottom-[10vmax] font-mono font-semibold tracking-widest uppercase text-[0.75vmax] text-secondary selection:bg-secondary selection:text-primary"
         style={{ writingMode: "vertical-lr", textOrientation: "mixed" }}
       >
         {"// 01 - Index"}

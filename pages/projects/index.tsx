@@ -1,11 +1,57 @@
 import Hr from "@/components/Utils/Hr";
 import Vr from "@/components/Utils/Vr";
 import { sleep } from "@/utils/sleep";
+import { motion } from "framer-motion";
 import { GetStaticProps, InferGetStaticPropsType, NextPage } from "next";
+import { useRouter } from "next/router";
+import { useState } from "react";
+
+const projectTransitionRootVariants = {
+  reveal: {
+    transition: {
+      staggerChildren: 0.01,
+      staggerDirection: 1,
+    },
+  },
+  hide: {
+    transition: {
+      staggerChildren: 0.01,
+      staggerDirection: 1,
+    },
+  },
+};
+
+const projectTransitionSpanVariants = {
+  reveal: {
+    height: "105%",
+  },
+  hide: {
+    height: "0%",
+  },
+};
+
+const projectTransitionTextVariants = {
+  reveal: {
+    opacity: 1,
+    transition: {
+      opacity: { delay: 0.25 },
+    },
+  },
+  hide: {
+    opacity: 0,
+  },
+};
 
 const Project: React.FC = () => {
+  const [hover, setHover] = useState(false);
+  const router = useRouter();
   return (
-    <div className="w-full h-full cursor-pointer text-secondary relative">
+    <div
+      onPointerEnter={() => setHover(true)}
+      onPointerLeave={() => setHover(false)}
+      onClick={() => router.push("/projects/remaster")}
+      className="w-full h-full cursor-pointer text-secondary relative"
+    >
       <h2 className="absolute left-[1vmax] font-black uppercase text-[3vmax] selection:bg-secondary selection:text-primary z-10 pointer-events-none">
         Project
       </h2>
@@ -26,6 +72,28 @@ const Project: React.FC = () => {
         <p>Server Development</p>
       </div>
       <div className="arrow bg-secondary absolute w-1/6 aspect-square right-0 z-10 pointer-events-none" />
+      <motion.div
+        animate={hover ? "reveal" : "hide"}
+        variants={projectTransitionRootVariants}
+        className="w-full h-full -scale-y-100 absolute overflow-hidden flex z-20 pointer-events-none"
+      >
+        {Array(20)
+          .fill(null)
+          .map((_, index) => (
+            <motion.span
+              key={index}
+              className="w-[5%] bg-secondary"
+              variants={projectTransitionSpanVariants}
+            />
+          ))}
+        <div className="w-full h-full absolute -scale-y-100 p-[5vmax] flex justify-center items-center font-mono font-semibold tracking-widest uppercase text-[0.75vmax] text-primary selection:bg-primary selection:text-secondary">
+          <motion.p variants={projectTransitionTextVariants}>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi fuga et dolor mollitia
+            quaerat quam a repellendus ea iure aperiam. Officiis labore delectus iure, hic facilis
+            consectetur cum nostrum nisi?
+          </motion.p>
+        </div>
+      </motion.div>
     </div>
   );
 };
@@ -41,7 +109,7 @@ const Projects: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({}) 
     <>
       <div className="w-full h-full pb-[3.5vmax] pr-[3.5vmax] pl-[2.75vmax]">
         <div className="w-full h-full flex flex-col relative rombus">
-          <div className="flex-1 grid grid-rows-2 relative">
+          <div className="basis-3/4 grid grid-rows-2 relative">
             <div className="bg-primary grid grid-cols-3 relative">
               <div className="relative">
                 <Vr style={{ right: 0 }} />
@@ -71,7 +139,7 @@ const Projects: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({}) 
             </div>
             <Vr style={{ right: 0 }} />
           </div>
-          <div className="grid grid-cols-3">
+          <div className="basis-1/4 grid grid-cols-3">
             <div className="relative col-span-2">
               <Hr style={{ bottom: 0 }} />
               <Vr style={{ right: 0 }} />

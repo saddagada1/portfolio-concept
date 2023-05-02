@@ -6,28 +6,28 @@ const pageTransitionRootVariants = {
   reveal: {
     transition: {
       staggerChildren: 0.01,
-      staggerDirection: -1,
+      staggerDirection: 1,
     },
   },
   hide: {
     transition: {
       staggerChildren: 0.01,
-      staggerDirection: -1,
+      staggerDirection: 1,
     },
   },
 };
 
 const pageTransitionSpanVariants = {
   reveal: {
-    height: "105%",
+    width: "105%",
     transition: {
-      height: { type: "spring", damping: 25, bounce: 0 },
+      width: { type: "spring", damping: 25, bounce: 0 },
     },
   },
   hide: {
-    height: "0%",
+    width: "0%",
     transition: {
-      height: { type: "spring", bounce: 0 },
+      width: { type: "spring", bounce: 0 },
     },
   },
 };
@@ -69,12 +69,13 @@ const PageTransition: React.FC = () => {
         x--;
         setTransitionText((transitionText) => transitionText.slice(0, -1));
       } else {
-        i++;
         if (i === text.length - 1) {
           setIsTyping(false);
           clearInterval(typeInterval);
+        } else {
+          i++;
+          setTransitionText((transitionText) => transitionText + text[i]);
         }
-        setTransitionText((transitionText) => transitionText + text[i]);
       }
     }, 100);
   };
@@ -143,18 +144,18 @@ const PageTransition: React.FC = () => {
     <motion.div
       animate={shouldTransition ? "reveal" : "hide"}
       variants={pageTransitionRootVariants}
-      className="w-full h-full -scale-y-100 absolute overflow-hidden flex z-40 pointer-events-none"
+      className="w-full h-full absolute overflow-hidden flex flex-col z-40 pointer-events-none"
     >
       {Array(25)
         .fill(null)
         .map((_, index) => (
           <motion.span
             key={index}
-            className="w-[4%] bg-secondary"
+            className="h-[4%] bg-secondary"
             variants={pageTransitionSpanVariants}
           />
         ))}
-      <div className="w-full h-full absolute -scale-y-100 flex justify-center items-center font-mono font-semibold tracking-widest uppercase text-[1vmax] text-primary selection:bg-primary selection:text-secondary">
+      <div className="w-full h-full absolute flex justify-center items-center font-mono font-semibold tracking-widest uppercase text-[1vmax] text-primary selection:bg-primary selection:text-secondary">
         <motion.p variants={pageTransitionTextVariants}>
           {transitionText}
           <span className="cursor">&#9608;</span>

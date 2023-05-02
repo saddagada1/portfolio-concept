@@ -7,7 +7,7 @@ interface VrProps {
 const Vr: React.FC<VrProps> = ({ style }) => {
   return (
     <div
-      className="vr origin-top absolute border-r-[0.1vmax] border-solid border-secondary z-10"
+      className="h-full absolute border-r-[0.1vmax] border-solid border-secondary z-10"
       style={style}
     />
   );

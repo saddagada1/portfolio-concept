@@ -17,6 +17,7 @@ import { rand } from "@/utils/rand";
 import { useAppSelector } from "@/redux/hooks";
 import { ColorAverage, EffectComposer, Glitch } from "@react-three/postprocessing";
 import { GlitchMode, OverrideMaterialManager } from "postprocessing";
+import { sleep } from "@/utils/sleep";
 
 interface SceneProps {
   data: string;
@@ -129,6 +130,7 @@ const Scene: React.FC<SceneProps> = ({ data }) => {
 export const getStaticProps: GetStaticProps<{
   data: string;
 }> = async () => {
+  await sleep(1000);
   const selector = rand(1, 3);
   let data: string;
   if (selector === 1) {

@@ -1,12 +1,11 @@
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setTheme } from "@/redux/slices/themeSlice";
-import { setShouldTransition, setTransition } from "@/redux/slices/transitionSlice";
 import { isServer } from "@/utils/isServer";
-import { motion } from "framer-motion";
 import Head from "next/head";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import PageTransition from "@/components/PageTransition/PageTransition";
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
 
 const Header: React.FC = () => {
   const [date, setDate] = useState<Date>(new Date());
@@ -43,21 +42,13 @@ const Header: React.FC = () => {
       </div>
       <div className="flex flex-col ml-[2vmax]">
         <p
-          onClick={() => {
-            router.pathname === "/"
-              ? null
-              : dispatch(setTransition({ shouldTransition: true, transitionURL: "/" }));
-          }}
+          onClick={() => (router.asPath !== "/" ? router.push("/") : null)}
           className="cursor-pointer text-transparent relative select-none link will-change-transform before:content-['Index'] before:absolute before:h-1/2 before:overflow-clip before:transition-transform before:duration-500 before:translate-x-[0%] before:text-secondary after:content-['Index'] after:absolute after:w-full after:h-full after:block after:top-0 after:transition-transform after:duration-500 after:text-secondary hover:before:translate-x-[-15%]"
         >
           Index
         </p>
         <p
-          onClick={() => {
-            router.pathname === "/projects"
-              ? null
-              : dispatch(setTransition({ shouldTransition: true, transitionURL: "/projects" }));
-          }}
+          onClick={() => (router.asPath !== "/projects" ? router.push("/projects") : null)}
           className="cursor-pointer mt-[0.5vmax] text-transparent relative select-none link will-change-transform before:content-['Projects'] before:absolute before:h-1/2 before:overflow-clip before:transition-transform before:duration-500 before:translate-x-[0%] before:text-secondary after:content-['Projects'] after:absolute after:w-full after:h-full after:block after:top-0 after:transition-transform after:duration-500 after:text-secondary hover:before:translate-x-[-10%]"
         >
           Projects
@@ -121,48 +112,6 @@ const Header: React.FC = () => {
   );
 };
 
-const transitionRootVariants = {
-  reveal: {
-    transition: {
-      staggerChildren: 0.01,
-      staggerDirection: -1,
-    },
-  },
-  hide: {
-    transition: {
-      staggerChildren: 0.01,
-      staggerDirection: -1,
-    },
-  },
-};
-
-const transitionSpanVariants = {
-  reveal: {
-    height: "105%",
-    transition: {
-      height: { type: "spring", damping: 25, bounce: 0 },
-    },
-  },
-  hide: {
-    height: "0%",
-    transition: {
-      height: { type: "spring", bounce: 0 },
-    },
-  },
-};
-
-const transitionTextVariants = {
-  reveal: {
-    opacity: 1,
-    transition: {
-      opacity: { delay: 0.25 },
-    },
-  },
-  hide: {
-    opacity: 0,
-  },
-};
-
 interface LayoutProps {
   children: React.ReactNode;
 }
@@ -170,40 +119,6 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [viewHeight, setViewHeight] = useState(0);
   const [viewWidth, setViewWidth] = useState(0);
-  const transition = useAppSelector((store) => store.transition);
-  const [transitionText, setTransitionText] = useState("/");
-  const [isTyping, setIsTyping] = useState(false);
-  const typeInterval = useRef<NodeJS.Timer>(null!);
-  const dispatch = useAppDispatch();
-  const router = useRouter();
-
-  const getCommonStringIndex = (text1: string, text2: string) => {
-    let index = 0;
-    while (text1[index] === text2[index]) {
-      index++;
-    }
-    return index - 1;
-  };
-
-  const typeTransitionText = (text: string) => {
-    setIsTyping(true);
-    const commonIndex = getCommonStringIndex(transitionText, text);
-    let i = commonIndex;
-    let x = transitionText.length - 1;
-    typeInterval.current = setInterval(() => {
-      if (x !== commonIndex) {
-        x--;
-        setTransitionText((transitionText) => transitionText.slice(0, -1));
-      } else {
-        i++;
-        if (i === text.length - 1) {
-          setIsTyping(false);
-          clearInterval(typeInterval.current);
-        }
-        setTransitionText((transitionText) => transitionText + text[i]);
-      }
-    }, 100);
-  };
 
   useEffect(() => {
     const setViewport = () => {
@@ -221,38 +136,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     };
   }, []);
 
-  useEffect(() => {
-    let typeTimeout: NodeJS.Timer;
-    if (transition.shouldTransition && router.pathname !== transition.transitionURL) {
-      typeTimeout = setTimeout(() => {
-        if (transition.transitionURL === "/") {
-          typeTransitionText("/index");
-        } else {
-          typeTransitionText(transition.transitionURL);
-        }
-        router.push(transition.transitionURL);
-      }, 1000);
-    }
-
-    return () => {
-      clearTimeout(typeTimeout);
-    };
-    // eslint-disable-next-line
-  }, [transition, router, dispatch]);
-
-  useEffect(() => {
-    let delayTransitionEnd: NodeJS.Timer;
-    if (!isTyping) {
-      delayTransitionEnd = setTimeout(() => {
-        dispatch(setShouldTransition({ shouldTransition: false }));
-      }, 1000);
-    }
-
-    return () => {
-      clearTimeout(delayTransitionEnd);
-    };
-  }, [isTyping, dispatch]);
-
   return (
     <>
       <Head>
@@ -268,28 +151,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         >
           <Header />
           {children}
-          <motion.div
-            animate={transition.shouldTransition ? "reveal" : "hide"}
-            variants={transitionRootVariants}
-            className="w-full h-full -scale-y-100 absolute overflow-hidden flex z-40 pointer-events-none"
-          >
-            {Array(25)
-              .fill(null)
-              .map((_, index) => (
-                <motion.span
-                  key={index}
-                  className="w-[4%] bg-secondary"
-                  initial={{ height: "0%" }}
-                  variants={transitionSpanVariants}
-                />
-              ))}
-            <div className="w-full h-full absolute -scale-y-100 flex justify-center items-center font-mono font-semibold tracking-widest uppercase text-[1vmax] text-primary selection:bg-primary selection:text-secondary">
-              <motion.p initial={{ opacity: 0 }} variants={transitionTextVariants}>
-                {transitionText}
-                <span className="cursor">&#9608;</span>
-              </motion.p>
-            </div>
-          </motion.div>
+          <PageTransition />
           <div className="grain z-50" />
         </main>
       )}

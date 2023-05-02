@@ -1,6 +1,7 @@
 import Hr from "@/components/Utils/Hr";
 import Vr from "@/components/Utils/Vr";
-import { NextPage } from "next";
+import { sleep } from "@/utils/sleep";
+import { GetStaticProps, InferGetStaticPropsType, NextPage } from "next";
 
 const Project: React.FC = () => {
   return (
@@ -29,7 +30,13 @@ const Project: React.FC = () => {
   );
 };
 
-const Projects: NextPage = () => {
+export const getStaticProps: GetStaticProps<{}> = async () => {
+  await sleep(1000);
+
+  return { props: {} };
+};
+
+const Projects: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({}) => {
   return (
     <>
       <div className="w-full h-full pb-[3.5vmax] pr-[3.5vmax] pl-[2.75vmax]">

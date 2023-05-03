@@ -11,6 +11,7 @@ module.exports = {
       fontFamily: {
         sans: ["Raleway", ...defaultTheme.fontFamily.sans],
         mono: ["IBMPlexMono", ...defaultTheme.fontFamily.mono],
+        numeric: ["Ubuntu"],
       },
       colors: {
         primary: "var(--primary-colour)",

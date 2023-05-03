@@ -36,11 +36,14 @@ const pageTransitionTextVariants = {
   reveal: {
     opacity: 1,
     transition: {
-      opacity: { delay: 0.25 },
+      opacity: { delay: 0 },
     },
   },
   hide: {
     opacity: 0,
+    transition: {
+      opacity: { duration: 0.1 },
+    },
   },
 };
 

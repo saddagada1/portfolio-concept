@@ -55,6 +55,20 @@ const Header: React.FC = () => {
         </p>
       </div>
       <div className="flex flex-col ml-[2vmax]">
+        <p
+          onClick={() => (router.asPath !== "/about" ? router.push("/about") : null)}
+          className="cursor-pointer text-transparent relative select-none link will-change-transform before:content-['About'] before:absolute before:h-1/2 before:overflow-clip before:transition-transform before:duration-500 before:translate-x-[0%] before:text-secondary after:content-['About'] after:absolute after:w-full after:h-full after:block after:top-0 after:transition-transform after:duration-500 after:text-secondary hover:before:translate-x-[-15%]"
+        >
+          About
+        </p>
+        <p
+          onClick={() => (router.asPath !== "/contact" ? router.push("/contact") : null)}
+          className="cursor-pointer mt-[0.5vmax] text-transparent relative select-none link will-change-transform before:content-['Contact'] before:absolute before:h-1/2 before:overflow-clip before:transition-transform before:duration-500 before:translate-x-[0%] before:text-secondary after:content-['Contact'] after:absolute after:w-full after:h-full after:block after:top-0 after:transition-transform after:duration-500 after:text-secondary hover:before:translate-x-[-15%]"
+        >
+          Contact
+        </p>
+      </div>
+      <div className="flex flex-col ml-[2vmax]">
         <Link
           href="https://github.com/saddagada1"
           className="text-transparent relative select-none link will-change-transform before:content-['Github'] before:absolute before:h-1/2 before:overflow-clip before:transition-transform before:duration-500 before:translate-x-[0%] before:text-secondary after:content-['Github'] after:absolute after:w-full after:h-full after:block after:top-0 after:transition-transform after:duration-500 after:text-secondary hover:before:translate-x-[-15%]"
@@ -67,21 +81,6 @@ const Header: React.FC = () => {
         >
           LinkedIn
         </Link>
-      </div>
-      <div className="flex flex-col ml-[2vmax]">
-        <Link
-          href="mailto:saddagada1@gmail.com"
-          className="text-transparent relative select-none link will-change-transform before:content-['Email'] before:absolute before:h-1/2 before:overflow-clip before:transition-transform before:duration-500 before:translate-x-[0%] before:text-secondary after:content-['Email'] after:absolute after:w-full after:h-full after:block after:top-0 after:transition-transform after:duration-500 after:text-secondary hover:before:translate-x-[-15%]"
-        >
-          Email
-        </Link>
-        <a
-          href="/books/poe-1.txt"
-          download
-          className="mt-[0.5vmax] text-transparent relative select-none link will-change-transform before:content-['Resume'] before:absolute before:h-1/2 before:overflow-clip before:transition-transform before:duration-500 before:translate-x-[0%] before:text-secondary after:content-['Resume'] after:absolute after:w-full after:h-full after:block after:top-0 after:transition-transform after:duration-500 after:text-secondary hover:before:translate-x-[-10%]"
-        >
-          Resume
-        </a>
       </div>
       <div className="flex flex-col justify-end ml-[2vmax]">
         <div

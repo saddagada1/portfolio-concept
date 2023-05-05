@@ -163,6 +163,18 @@
   );
 }
 
+.stripes-thin-2 {
+  background-color: var(--primary-colour);
+  background-size: 5px 5px;
+  background-image: repeating-linear-gradient(
+    135deg,
+    var(--secondary-colour) 0,
+    var(--secondary-colour) 1px,
+    var(--primary-colour) 0,
+    var(--primary-colour) 50%
+  );
+}
+
 .boxes {
   background-color: var(--primary-colour);
   background-image: linear-gradient(var(--secondary-colour) 0.5px, transparent 0.5px),
@@ -181,7 +193,7 @@
   background-size: 4px 4px;
 }
 
-.rombus {
+.checks {
   background-color: var(--primary-colour);
   background-image: repeating-linear-gradient(
       45deg,

@@ -28,7 +28,7 @@ const Scene: React.FC<SceneProps> = ({ data }) => {
   const shadow = useRef<Mesh>(null!);
   const text = useRef<Group>(null!);
   const theme = useAppSelector((store) => store.theme);
-  const [orbDetail, setOrbDetail] = useState(rand(1, 5));
+  const [orbDetail, setOrbDetail] = useState(rand(1, 4));
   const [shouldGlitch, setShouldGlitch] = useState(false);
   const [hover, setHover] = useState(false);
   useCursor(hover, "pointer");
@@ -59,7 +59,7 @@ const Scene: React.FC<SceneProps> = ({ data }) => {
         if (smooth === 20) {
           setOrbDetail(20);
         } else {
-          setOrbDetail(rand(1, 5));
+          setOrbDetail(rand(1, 4));
         }
         setShouldGlitch(false);
       }, 100 * rand(2, 4));
@@ -155,17 +155,15 @@ export const getStaticProps: GetStaticProps<{
 const Index: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({ data }) => {
   return (
     <>
-      <div className="w-1/3 absolute bottom-0 left-0 m-[3.5vmax] z-10 text-secondary">
-        <h1 className="w-max group font-black uppercase text-[2vmax] flex selection:bg-secondary selection:text-primary cursor-default">
+      <div className="w-1/3 absolute bottom-[3.5vmax] left-[3.5vmax] z-10 text-secondary selection:bg-secondary selection:text-primary">
+        <h1 className="w-max group font-black uppercase text-[2vmax] flex">
           <span className="italic text-transparent relative link will-change-transform before:content-['Saivamsi'] before:absolute before:h-1/2 before:overflow-clip before:transition-transform before:duration-500 before:translate-x-[0%] before:text-secondary after:content-['Saivamsi'] after:absolute after:w-full after:h-full after:block after:top-0 after:transition-transform after:duration-500 after:text-secondary group-hover:before:translate-x-[-10%]">
             Saivamsi
           </span>
           &nbsp;Addagada
         </h1>
-        <p className="font-bold text-[1.25vmax] selection:bg-secondary selection:text-primary">
-          [ Portfolio ]
-        </p>
-        <p className="font-mono font-semibold tracking-widest uppercase text-[0.75vmax] mt-[1vmax] selection:bg-secondary selection:text-primary">
+        <p className="font-bold text-[1.25vmax]">[ Portfolio ]</p>
+        <p className="font-mono font-semibold tracking-widest uppercase text-[0.75vmax] mt-[1vmax]">
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Eveniet unde temporibus quo iste
           ipsa suscipit sint facere, eos inventore adipisci non fugit obcaecati corrupti voluptatum
           maiores sunt culpa nulla. Velit!

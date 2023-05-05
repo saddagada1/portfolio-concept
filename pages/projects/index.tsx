@@ -105,9 +105,9 @@ export const getStaticProps: GetStaticProps<{}> = async () => {
 const Projects: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({}) => {
   return (
     <>
-      <div className="w-full h-full pb-[3.5vmax] pr-[3.5vmax] pl-[2.75vmax]">
-        <div className="w-full h-full flex flex-col relative rombus">
-          <div className="basis-3/4 grid grid-rows-2 relative">
+      <div className="w-full h-full pb-[1.25vmax] pr-[1.25vmax] pl-[2.75vmax]">
+        <div className="w-full h-full grid grid-rows-4 relative checks">
+          <div className="row-span-3 grid grid-rows-2 relative">
             <div className="bg-primary grid grid-cols-3 relative">
               <div className="relative">
                 <Vr style={{ right: 0 }} />
@@ -135,23 +135,9 @@ const Projects: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({}) 
                 <Hr style={{ bottom: 0 }} />
               </div>
             </div>
-            <Vr style={{ right: 0 }} />
           </div>
-          <div className="basis-1/4 grid grid-cols-3">
-            <div className="relative col-span-2">
-              <Hr style={{ bottom: 0 }} />
-              <Vr style={{ right: 0 }} />
-            </div>
-            <div className="bg-primary text-secondary text-right selection:bg-secondary selection:text-primary relative pt-[1vmax] pl-[0.5vmax]">
-              <h1 className="font-black uppercase text-[2vmax]">Projects</h1>
-              <p className="font-bold text-[1.25vmax]">[ Selected ]</p>
-              <p className="font-mono font-semibold tracking-widest uppercase text-[0.75vmax] mt-[1vmax]">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Eveniet unde temporibus quo
-                iste ipsa suscipit sint facere, eos inventore adipisci non fugit obcaecati corrupti
-                voluptatum maiores sunt culpa nulla. Velit!
-              </p>
-            </div>
-          </div>
+          <Hr style={{ bottom: 0 }} />
+          <Vr style={{ right: 0 }} />
           <Hr style={{ top: 0 }} />
           <Vr style={{ left: 0 }} />
         </div>
